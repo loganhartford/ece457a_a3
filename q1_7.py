@@ -3,8 +3,9 @@ import matplotlib.pyplot as plt
 import time
 
 if __name__ == '__main__':
+    # Balanced parameters from 1.5 and 1.6
     population_size = 50
-    num_generations = 150
+    num_generations = 20
     crossover_probs = [0.5, 0.6, 0.7]
     mutation_probs = [0.2, 0.25, 0.3]
 
@@ -30,6 +31,6 @@ if __name__ == '__main__':
             axs[i, j].set_xlabel("Generation")
             axs[i, j].set_ylabel("Best Fitness")
 
-    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Adjust layout to make room for the main title
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.savefig("fitness_progress_grid_crossover_mutation.png")
     plt.show()

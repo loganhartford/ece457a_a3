@@ -19,12 +19,11 @@ if __name__ == '__main__':
             print("Best Individual:", best_individual)
             print("Best Fitness:", best_fitness)
             
-            # Plot results in the appropriate subplot
             axs[i, j].plot(best_fitness_per_generation)
             axs[i, j].set_title(f"Pop: {num_population}, Gen: {num_generation}")
             axs[i, j].set_xlabel("Generation")
             axs[i, j].set_ylabel("Best Fitness")
 
-    plt.tight_layout(rect=[0, 0, 1, 0.95])  # Adjust layout to make room for the main title
+    plt.tight_layout(rect=[0, 0, 1, 0.95])
     plt.savefig("fitness_progress_grid.png")
     plt.show()
