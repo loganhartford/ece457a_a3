@@ -92,18 +92,16 @@ def select_parents(population, selection_probs):
     parents_idx = np.random.choice(len(population), size=2, p=selection_probs)
     return population[parents_idx[0]], population[parents_idx[1]]
 
-def crossover(parent1, parent2):
+def crossover(parent1, parent2, crossover_prob):
     if np.random.random() < crossover_prob:
-        # Single point crossover
         crossover_point = np.random.randint(1, 3)
         child1 = np.concatenate([parent1[:crossover_point], parent2[crossover_point:]])
         child2 = np.concatenate([parent2[:crossover_point], parent1[crossover_point:]])
         return child1, child2
     return parent1.copy(), parent2.copy()
 
-def mutate(individual):
+def mutate(individual, mutation_prob):
     if np.random.random() < mutation_prob:
-        # Gaussian mutation
         individual[0] = round(np.clip(individual[0] + np.random.normal(0, 1), *Kp_range), 2)
         individual[1] = round(np.clip(individual[1] + np.random.normal(0, 1), *Ti_range), 2)
         individual[2] = round(np.clip(individual[2] + np.random.normal(0, 1), *Td_range), 2)
@@ -129,14 +127,14 @@ def compute_selection_probs(fitnesses):
         selection_probs = inverse_fitnesses / total
     return selection_probs
 
-def genetic_algorithm(population_size, num_generations):
+def genetic_algorithm(population_size, num_generations, crossover_prob=0.6, mutation_prob=0.25):
     population, fitnesses = initialize_population(population_size)
     best_fitness_per_generation = []
     best_individual = None
     best_fitness = float('inf')
     
     for generation in range(num_generations):
-        print(f'Generation {generation + 1}/{num_generations}')
+        # print(f'Generation {generation + 1}/{num_generations}')
         
         # Evaluate fitnesses
         if generation > 0:
@@ -166,10 +164,10 @@ def genetic_algorithm(population_size, num_generations):
         # Generate new offspring
         while len(next_population) < population_size:
             parent1, parent2 = select_parents(population, selection_probs)
-            child1, child2 = crossover(parent1, parent2)
+            child1, child2 = crossover(parent1, parent2, crossover_prob)
     
-            child1 = mutate(child1)
-            child2 = mutate(child2)
+            child1 = mutate(child1, mutation_prob)
+            child2 = mutate(child2, mutation_prob)
     
             fitness1 = fitness_function(child1)
             fitness2 = fitness_function(child2)
@@ -191,9 +189,13 @@ def plot_results(best_fitness_per_generation, filename='fitness_progress.png'):
     plt.ylabel("Best Fitness")
     plt.title("GA Optimization Progress")
     plt.savefig(filename)  # Save the figure to a file
-    plt.show()
+    plt.close()  # Close the figure to free up memory
 
-def test_1_3():
+
+if __name__ == '__main__':
+    population_size = 50
+    num_generations = 150
+
     start_time = time.time()
     best_individual, best_fitness, best_fitness_per_generation = genetic_algorithm(population_size, num_generations)
     end_time = time.time()
@@ -202,10 +204,3 @@ def test_1_3():
     print("Best Individual:", best_individual)
     print("Best Fitness:", best_fitness)
     plot_results(best_fitness_per_generation, filename='1.3.png')
-
-if __name__ == '__main__':
-    population_size = 50
-    num_generations = 150
-    crossover_prob = 0.6
-    mutation_prob = 0.25
-    test_1_3()
